@@ -1,5 +1,11 @@
+#include <stdio.h>
 #include <stdlib.h>
+
+#include "screen.h"
 #include "bombas.h"
+
+#define OFF_X 4
+#define OFF_Y 3
 
 void bombas_iniciar(Jogo *jogo)
 {
@@ -8,6 +14,26 @@ void bombas_iniciar(Jogo *jogo)
 
 void bombas_tecla(Jogo *jogo, int tecla)
 {
+    NoBomba *b;
+
+    if (tecla != ' ') {
+        return;
+    }
+
+    if (jogo->bombas != NULL) {
+        return;
+    }
+
+    b = malloc(sizeof(NoBomba));
+    if (b == NULL) {
+        return;
+    }
+
+    b->x = jogo->px;
+    b->y = jogo->py;
+    b->tempo = 0;
+    b->prox = NULL;
+    jogo->bombas = b;
 }
 
 void bombas_atualizar(Jogo *jogo)
@@ -16,9 +42,28 @@ void bombas_atualizar(Jogo *jogo)
 
 void bombas_desenhar(Jogo *jogo)
 {
+    NoBomba *b;
+
+    b = jogo->bombas;
+    if (b == NULL) {
+        return;
+    }
+
+    screenGotoxy(OFF_X + b->x, OFF_Y + b->y);
+    screenSetColor(YELLOW, BLACK);
+    printf("o");
 }
 
 void bombas_liberar(Jogo *jogo)
 {
+    NoBomba *b;
+    NoBomba *prox;
+
+    b = jogo->bombas;
+    while (b != NULL) {
+        prox = b->prox;
+        free(b);
+        b = prox;
+    }
     jogo->bombas = NULL;
 }
