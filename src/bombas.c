@@ -6,6 +6,7 @@
 
 #define OFF_X 4
 #define OFF_Y 3
+#define TEMPO_BOMBA 35
 
 void bombas_iniciar(Jogo *jogo)
 {
@@ -38,6 +39,15 @@ void bombas_tecla(Jogo *jogo, int tecla)
 
 void bombas_atualizar(Jogo *jogo)
 {
+    if (jogo->bombas == NULL) {
+        return;
+    }
+
+    jogo->bombas->tempo++;
+    if (jogo->bombas->tempo >= TEMPO_BOMBA) {
+        free(jogo->bombas);
+        jogo->bombas = NULL;
+    }
 }
 
 void bombas_desenhar(Jogo *jogo)
