@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "bombas.h"
 
 void bombas_iniciar(Jogo *jogo)
