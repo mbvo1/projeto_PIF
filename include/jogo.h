@@ -3,6 +3,15 @@
 
 #include "mapa.h"
 
+#define MAX_INIMIGOS 4
+
+typedef struct {
+    int x, y;
+    int vivo;
+    int dir;
+    int timer;
+} Inimigo;
+
 struct NoBomba;
 
 typedef struct {
@@ -12,6 +21,9 @@ typedef struct {
     int rodando;
     int pontos;
     struct NoBomba *bombas;
+    Inimigo inimigos[MAX_INIMIGOS];
+    int n_inimigos;
+
 } Jogo;
 
 void iniciar(Jogo *jogo);
