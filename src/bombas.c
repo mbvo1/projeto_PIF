@@ -7,6 +7,106 @@
 #define OFF_X 4
 #define OFF_Y 3
 #define TEMPO_BOMBA 35
+#define TEMPO_EXPLOSAO 10
+#define ALCANCE_EXPLOSAO 1
+
+static int aviso_atingido = 0;
+
+static int explosao_pega_player(Jogo *jogo, int x, int y)
+{
+    return jogo->px == x && jogo->py == y;
+}
+
+static void processar_celula_explosao(Jogo *jogo, int x, int y)
+{
+    char cel;
+
+    cel = ler_celula(&jogo->mapa, x, y);
+    if (cel == '#') {
+        return;
+    }
+
+    if (cel == '%') {
+        mudar_celula(&jogo->mapa, x, y, ' ');
+    }
+
+    if (explosao_pega_player(jogo, x, y)) {
+        aviso_atingido = TEMPO_EXPLOSAO;
+    }
+}
+
+static void aplicar_explosao(Jogo *jogo, NoBomba *b)
+{
+    int i;
+    int x;
+    int y;
+
+    processar_celula_explosao(jogo, b->x, b->y);
+
+    for (i = 1; i <= ALCANCE_EXPLOSAO; i++) {
+        x = b->x;
+        y = b->y - i;
+        if (ler_celula(&jogo->mapa, x, y) != '#') {
+            processar_celula_explosao(jogo, x, y);
+        }
+
+        x = b->x;
+        y = b->y + i;
+        if (ler_celula(&jogo->mapa, x, y) != '#') {
+            processar_celula_explosao(jogo, x, y);
+        }
+
+        x = b->x - i;
+        y = b->y;
+        if (ler_celula(&jogo->mapa, x, y) != '#') {
+            processar_celula_explosao(jogo, x, y);
+        }
+
+        x = b->x + i;
+        y = b->y;
+        if (ler_celula(&jogo->mapa, x, y) != '#') {
+            processar_celula_explosao(jogo, x, y);
+        }
+    }
+}
+
+static void desenhar_celula_explosao(Jogo *jogo, int x, int y)
+{
+    if (ler_celula(&jogo->mapa, x, y) == '#') {
+        return;
+    }
+
+    screenGotoxy(OFF_X + x, OFF_Y + y);
+    screenSetColor(LIGHTRED, BLACK);
+    printf("*");
+}
+
+static void desenhar_explosao(Jogo *jogo, NoBomba *b)
+{
+    int i;
+    int x;
+    int y;
+
+    desenhar_celula_explosao(jogo, b->x, b->y);
+
+    for (i = 1; i <= ALCANCE_EXPLOSAO; i++) {
+        x = b->x;
+        y = b->y - i;
+        desenhar_celula_explosao(jogo, x, y);
+
+        x = b->x;
+        y = b->y + i;
+        desenhar_celula_explosao(jogo, x, y);
+
+        x = b->x - i;
+        y = b->y;
+        desenhar_celula_explosao(jogo, x, y);
+
+        x = b->x + i;
+        y = b->y;
+        desenhar_celula_explosao(jogo, x, y);
+    }
+}
 
 void bombas_iniciar(Jogo *jogo)
 {
@@ -40,13 +140,25 @@ void bombas_tecla(Jogo *jogo, int tecla)
 void bombas_atualizar(Jogo *jogo)
 {
     if (jogo->bombas == NULL) {
+        if (aviso_atingido > 0) {
+            aviso_atingido--;
+        }
         return;
     }
 
     jogo->bombas->tempo++;
-    if (jogo->bombas->tempo >= TEMPO_BOMBA) {
+
+    if (jogo->bombas->tempo == TEMPO_BOMBA) {
+        aplicar_explosao(jogo, jogo->bombas);
+    }
+
+    if (jogo->bombas->tempo >= TEMPO_BOMBA + TEMPO_EXPLOSAO) {
         free(jogo->bombas);
         jogo->bombas = NULL;
+    }
+
+    if (aviso_atingido > 0) {
+        aviso_atingido--;
     }
 }
 
@@ -56,12 +168,35 @@ void bombas_desenhar(Jogo *jogo)
 
     b = jogo->bombas;
     if (b == NULL) {
+        if (aviso_atingido > 0) {
+            screenGotoxy(3, 23);
+            screenSetColor(LIGHTRED, BLACK);
+            printf("Voce foi atingido pela explosao! ");
+        } else {
+            screenGotoxy(3, 23);
+            screenSetColor(WHITE, BLACK);
+            printf("                                ");
+        }
         return;
     }
 
-    screenGotoxy(OFF_X + b->x, OFF_Y + b->y);
-    screenSetColor(YELLOW, BLACK);
-    printf("o");
+    if (b->tempo < TEMPO_BOMBA) {
+        screenGotoxy(OFF_X + b->x, OFF_Y + b->y);
+        screenSetColor(YELLOW, BLACK);
+        printf("o");
+    } else {
+        desenhar_explosao(jogo, b);
+    }
+
+    if (aviso_atingido > 0) {
+        screenGotoxy(3, 23);
+        screenSetColor(LIGHTRED, BLACK);
+        printf("Voce foi atingido pela explosao! ");
+    } else {
+        screenGotoxy(3, 23);
+        screenSetColor(WHITE, BLACK);
+        printf("                                ");
+    }
 }
 
 void bombas_liberar(Jogo *jogo)
