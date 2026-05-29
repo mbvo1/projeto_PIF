@@ -48,7 +48,7 @@ void inimigos_atualizar(Jogo *jogo)
             ini->y = ny;
         } else {
             int dirs[4] = {0, 1, 2, 3};
-            for (int j= 3; j > 0; j++){
+            for (int j = 3; j > 0; j--){
                 int k = rand() % (j + 1);
                 int tmp =dirs[j];dirs[j] = dirs[k]; dirs[k] = tmp;
             }
