@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "jogo.h"
 #include "inimigos.h"
 #include "screen.h"
 
@@ -46,6 +47,9 @@ void inimigos_atualizar(Jogo *jogo)
         if (pode_andar(jogo, nx, ny)) {
             ini->x = nx;
             ini->y = ny;
+            if (rand() % 10 == 0){
+                ini->dir = rand() % 4;
+            }    
         } else {
             int dirs[4] = {0, 1, 2, 3};
             for (int j = 3; j > 0; j--){
@@ -80,7 +84,16 @@ void inimigos_desenhar(Jogo *jogo)
         printf("X");
     }
 }
-
+void inimigos_explodidos(Jogo *jogo, int x, int y) {
+    for (int i = 0; i < jogo->n_inimigos; i++) {
+        Inimigo *ini = &jogo->inimigos[i];
+        if (!ini->vivo) continue;
+        if (ini->x == x && ini->y == y) {
+            ini->vivo = 0;
+            jogo->pontos += 100;
+        }
+    }
+}
 void inimigos_liberar(Jogo *jogo)
 {
     (void)jogo;
