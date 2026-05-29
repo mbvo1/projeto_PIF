@@ -18,8 +18,8 @@ void inimigos_iniciar(Jogo *jogo)
     jogo->pontos = 0;
     jogo->n_inimigos = 3;
 
-    int posX[] ={2,10,5};
-    int posY[] ={2,2,8};
+    int posX[] = {21, 21, 11};
+    int posY[] = {11, 1, 11};
 
     for(int i=0; i<jogo->n_inimigos; i++){
         jogo->inimigos[i].x = posX[i];
