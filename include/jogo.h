@@ -12,6 +12,10 @@ typedef struct {
     int timer;
 } Inimigo;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5d0ffbf (corrige bug de movimentação  e adiciona morte de inimigo por bomba)
 struct NoBomba;
 
 typedef struct {
@@ -23,7 +27,10 @@ typedef struct {
     struct NoBomba *bombas;
     Inimigo inimigos[MAX_INIMIGOS];
     int n_inimigos;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5d0ffbf (corrige bug de movimentação  e adiciona morte de inimigo por bomba)
 } Jogo;
 
 void iniciar(Jogo *jogo);
