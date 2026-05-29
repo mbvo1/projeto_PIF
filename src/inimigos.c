@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "jogo.h"
 #include "inimigos.h"
@@ -12,6 +13,18 @@ static int dy[] = {-1, 1, 0, 0};
 static int pode_andar(Jogo *jogo, int x,int y){
     char c = ler_celula(&jogo->mapa, x, y);
     return (c != '#'&& c != '%');
+}
+
+static void salvar_score(Jogo *jogo)
+{
+    FILE *arq;
+
+    arq = fopen("scores.txt", "a");
+    if (arq == NULL) {
+        return;
+    }
+    fprintf(arq, "%d\n", jogo->pontos);
+    fclose(arq);
 }
 
 void inimigos_iniciar(Jogo *jogo)
@@ -69,6 +82,7 @@ void inimigos_atualizar(Jogo *jogo)
         }    
         if (ini->x == jogo->px && ini->y == jogo->py) {
             jogo->rodando = 0;
+            salvar_score(jogo);
         }
     }
 }

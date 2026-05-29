@@ -3,6 +3,7 @@
 
 #include "screen.h"
 #include "bombas.h"
+#include "inimigos.h"
 
 #define OFF_X 4
 #define OFF_Y 3
@@ -29,6 +30,8 @@ static void processar_celula_explosao(Jogo *jogo, int x, int y)
     if (cel == '%') {
         mudar_celula(&jogo->mapa, x, y, ' ');
     }
+
+    inimigos_explodidos(jogo, x, y);
 
     if (explosao_pega_player(jogo, x, y)) {
         aviso_atingido = TEMPO_EXPLOSAO;
