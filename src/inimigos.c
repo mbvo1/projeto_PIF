@@ -77,7 +77,7 @@ void inimigos_desenhar(Jogo *jogo)
 
         screenSetColor(LIGHTRED, BLACK);
         screenGotoxy(OFF_X + ini->x, OFF_Y + ini->y);
-        printf("我");
+        printf("X");
     }
 }
 
