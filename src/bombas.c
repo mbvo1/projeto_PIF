@@ -40,39 +40,32 @@ static void processar_celula_explosao(Jogo *jogo, int x, int y)
     }
 }
 
-static void aplicar_explosao(Jogo *jogo, NoBomba *b)
+static void explosao_direcao(Jogo *jogo, int bx, int by, int dx, int dy)
 {
-    int i;
-    int x;
-    int y;
-
-    processar_celula_explosao(jogo, b->x, b->y);
+    int i, x, y;
+    char cel;
 
     for (i = 1; i <= ALCANCE_EXPLOSAO; i++) {
-        x = b->x;
-        y = b->y - i;
-        if (ler_celula(&jogo->mapa, x, y) != '#') {
-            processar_celula_explosao(jogo, x, y);
+        x = bx + dx * i;
+        y = by + dy * i;
+        cel = ler_celula(&jogo->mapa, x, y);
+        if (cel == '#') {
+            break;
         }
-
-        x = b->x;
-        y = b->y + i;
-        if (ler_celula(&jogo->mapa, x, y) != '#') {
-            processar_celula_explosao(jogo, x, y);
-        }
-
-        x = b->x - i;
-        y = b->y;
-        if (ler_celula(&jogo->mapa, x, y) != '#') {
-            processar_celula_explosao(jogo, x, y);
-        }
-
-        x = b->x + i;
-        y = b->y;
-        if (ler_celula(&jogo->mapa, x, y) != '#') {
-            processar_celula_explosao(jogo, x, y);
+        processar_celula_explosao(jogo, x, y);
+        if (cel == '%') {
+            break;
         }
     }
+}
+
+static void aplicar_explosao(Jogo *jogo, NoBomba *b)
+{
+    processar_celula_explosao(jogo, b->x, b->y);
+    explosao_direcao(jogo, b->x, b->y, 0, -1);
+    explosao_direcao(jogo, b->x, b->y, 0, 1);
+    explosao_direcao(jogo, b->x, b->y, -1, 0);
+    explosao_direcao(jogo, b->x, b->y, 1, 0);
 }
 
 static void desenhar_celula_explosao(Jogo *jogo, int x, int y)
@@ -86,31 +79,32 @@ static void desenhar_celula_explosao(Jogo *jogo, int x, int y)
     printf("*");
 }
 
-static void desenhar_explosao(Jogo *jogo, NoBomba *b)
+static void desenhar_direcao(Jogo *jogo, int bx, int by, int dx, int dy)
 {
-    int i;
-    int x;
-    int y;
-
-    desenhar_celula_explosao(jogo, b->x, b->y);
+    int i, x, y;
+    char cel;
 
     for (i = 1; i <= ALCANCE_EXPLOSAO; i++) {
-        x = b->x;
-        y = b->y - i;
+        x = bx + dx * i;
+        y = by + dy * i;
+        cel = ler_celula(&jogo->mapa, x, y);
+        if (cel == '#') {
+            break;
+        }
         desenhar_celula_explosao(jogo, x, y);
-
-        x = b->x;
-        y = b->y + i;
-        desenhar_celula_explosao(jogo, x, y);
-
-        x = b->x - i;
-        y = b->y;
-        desenhar_celula_explosao(jogo, x, y);
-
-        x = b->x + i;
-        y = b->y;
-        desenhar_celula_explosao(jogo, x, y);
+        if (cel == '%') {
+            break;
+        }
     }
+}
+
+static void desenhar_explosao(Jogo *jogo, NoBomba *b)
+{
+    desenhar_celula_explosao(jogo, b->x, b->y);
+    desenhar_direcao(jogo, b->x, b->y, 0, -1);
+    desenhar_direcao(jogo, b->x, b->y, 0, 1);
+    desenhar_direcao(jogo, b->x, b->y, -1, 0);
+    desenhar_direcao(jogo, b->x, b->y, 1, 0);
 }
 
 void bombas_iniciar(Jogo *jogo)
@@ -153,10 +147,6 @@ void bombas_atualizar(Jogo *jogo)
 
     jogo->bombas->tempo++;
 
-    if (jogo->bombas->tempo == TEMPO_BOMBA) {
-        aplicar_explosao(jogo, jogo->bombas);
-    }
-
     if (jogo->bombas->tempo >= TEMPO_BOMBA + TEMPO_EXPLOSAO) {
         free(jogo->bombas);
         jogo->bombas = NULL;
@@ -191,6 +181,9 @@ void bombas_desenhar(Jogo *jogo)
         printf("o");
     } else {
         desenhar_explosao(jogo, b);
+        if (b->tempo == TEMPO_BOMBA) {
+            aplicar_explosao(jogo, b);
+        }
     }
 
     if (aviso_atingido > 0) {
