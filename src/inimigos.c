@@ -15,7 +15,7 @@ static int pode_andar(Jogo *jogo, int x,int y){
     return (c != '#'&& c != '%');
 }
 
-static void salvar_score(Jogo *jogo)
+void salvar_score(Jogo *jogo)
 {
     FILE *arq;
 
@@ -27,13 +27,48 @@ static void salvar_score(Jogo *jogo)
     fclose(arq);
 }
 
+static int ler_melhor_score(void)
+{
+    FILE *arq;
+    int n, melhor = 0;
+
+    arq = fopen("scores.txt", "r");
+    if (arq == NULL) {
+        return 0;
+    }
+    while (fscanf(arq, "%d", &n) == 1) {
+        if (n > melhor) {
+            melhor = n;
+        }
+    }
+    fclose(arq);
+    return melhor;
+}
+
+static void checar_vitoria(Jogo *jogo)
+{
+    int i;
+
+    for (i = 0; i < jogo->n_inimigos; i++) {
+        if (jogo->inimigos[i].vivo) {
+            return;
+        }
+    }
+    if (jogo->n_inimigos > 0) {
+        jogo->fim = 2;
+        jogo->rodando = 0;
+        salvar_score(jogo);
+    }
+}
+
 void inimigos_iniciar(Jogo *jogo)
 {
     jogo->pontos = 0;
+    jogo->melhor_score = ler_melhor_score();
     jogo->n_inimigos = 3;
 
-    int posX[] = {21, 21, 11};
-    int posY[] = {11, 1, 11};
+    int posX[] = {61, 61, 35};
+    int posY[] = {13, 7, 13};
 
     for(int i=0; i<jogo->n_inimigos; i++){
         jogo->inimigos[i].x = posX[i];
@@ -81,10 +116,12 @@ void inimigos_atualizar(Jogo *jogo)
             }
         }    
         if (ini->x == jogo->px && ini->y == jogo->py) {
+            jogo->fim = 1;
             jogo->rodando = 0;
             salvar_score(jogo);
         }
     }
+    checar_vitoria(jogo);
 }
 
 void inimigos_desenhar(Jogo *jogo)

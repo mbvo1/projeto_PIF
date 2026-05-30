@@ -20,6 +20,8 @@ typedef struct {
     int py;
     int rodando;
     int pontos;
+    int fim;
+    int melhor_score;
     struct NoBomba *bombas;
     Inimigo inimigos[MAX_INIMIGOS];
     int n_inimigos;

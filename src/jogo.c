@@ -16,6 +16,8 @@ void iniciar(Jogo *jogo)
     jogo->py = 1;
     jogo->rodando = 1;
     jogo->pontos = 0;
+    jogo->fim = 0;
+    jogo->melhor_score = 0;
     jogo->bombas = NULL;
     jogo->mapa.celulas = NULL;
 
@@ -91,6 +93,10 @@ void desenhar(Jogo *jogo)
     screenSetBold();
     printf("@");
     screenSetNormal();
+
+    screenGotoxy(3, 22);
+    screenSetColor(WHITE, BLACK);
+    printf("Pontos: %d  Recorde: %d     ", jogo->pontos, jogo->melhor_score);
 
     screenGotoxy(3, 24);
     screenSetColor(WHITE, BLACK);

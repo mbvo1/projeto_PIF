@@ -28,6 +28,9 @@ O projeto busca recriar a experiência básica de um Bomberman no terminal, trab
 - Posicionamento de bombas;
 - Explosão das bombas após determinado tempo;
 - Interação com paredes, obstáculos e inimigos;
+- Pontuacao por inimigo eliminado (+100);
+- Score salvo em `scores.txt` ao morrer ou vencer;
+- Leitura do recorde de `scores.txt`;
 - Leitura de mapas a partir de arquivos;
 - Execução em terminal.
 

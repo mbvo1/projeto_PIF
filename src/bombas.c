@@ -9,7 +9,7 @@
 #define OFF_Y 3
 #define TEMPO_BOMBA 35
 #define TEMPO_EXPLOSAO 10
-#define ALCANCE_EXPLOSAO 1
+#define ALCANCE_EXPLOSAO 2
 
 static int aviso_atingido = 0;
 
@@ -34,7 +34,9 @@ static void processar_celula_explosao(Jogo *jogo, int x, int y)
     inimigos_explodidos(jogo, x, y);
 
     if (explosao_pega_player(jogo, x, y)) {
-        aviso_atingido = TEMPO_EXPLOSAO;
+        jogo->fim = 1;
+        jogo->rodando = 0;
+        salvar_score(jogo);
     }
 }
 

@@ -11,7 +11,7 @@
 void carregar_mapa(Mapa *mapa, char *arquivo)
 {
     FILE *arq;
-    char linha[40];
+    char linha[80];
     int y = 0;
     int i, j;
     int tam;
@@ -22,11 +22,11 @@ void carregar_mapa(Mapa *mapa, char *arquivo)
         exit(1);
     }
 
-    mapa->celulas = malloc(20 * sizeof(char *));
+    mapa->celulas = malloc(25 * sizeof(char *));
     mapa->altura = 0;
     mapa->largura = 0;
 
-    while (fgets(linha, 40, arq) != NULL && y < 20) {
+    while (fgets(linha, 80, arq) != NULL && y < 25) {
         for (i = 0; linha[i] != '\0'; i++) {
             if (linha[i] == '\n' || linha[i] == '\r') {
                 linha[i] = '\0';
@@ -41,7 +41,7 @@ void carregar_mapa(Mapa *mapa, char *arquivo)
             mapa->largura = tam;
         }
 
-        mapa->celulas[y] = malloc(40);
+        mapa->celulas[y] = malloc(80);
         strcpy(mapa->celulas[y], linha);
         y++;
     }

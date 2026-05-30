@@ -12,5 +12,8 @@ SRC_CLI = $(CLI)/src/screen.c $(CLI)/src/keyboard.c $(CLI)/src/timer.c
 bomberman: $(SRC_JOGO) $(SRC_CLI)
 	$(CC) $(SRC_JOGO) $(SRC_CLI) $(CFLAGS) -o bomberman
 
+run: bomberman
+	./bomberman
+
 clean:
 	rm -f bomberman

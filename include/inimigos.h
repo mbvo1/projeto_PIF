@@ -7,6 +7,7 @@ void inimigos_iniciar(Jogo *jogo);
 void inimigos_atualizar(Jogo *jogo);
 void inimigos_desenhar(Jogo *jogo);
 void inimigos_explodidos(Jogo *jogo, int x, int y);
+void salvar_score(Jogo *jogo);
 void inimigos_liberar(Jogo *jogo);
 
 #endif
