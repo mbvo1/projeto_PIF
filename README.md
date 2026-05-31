@@ -79,3 +79,7 @@ Para limpar o executavel:
 ```bash
 make clean
 ```
+
+## Demostração do jogo 
+
+[Assitir demostração no YouTube](https://youtu.be/Q8RYycnCE8w)
