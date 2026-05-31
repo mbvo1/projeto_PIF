@@ -65,10 +65,10 @@ void inimigos_iniciar(Jogo *jogo)
 {
     jogo->pontos = 0;
     jogo->melhor_score = ler_melhor_score();
-    jogo->n_inimigos = 3;
+    jogo->n_inimigos = 5;
 
-    int posX[] = {61, 45, 35};
-    int posY[] = {13, 7, 13};
+    int posX[] = {61, 45, 35, 15, 55};
+    int posY[] = {1, 10, 10, 15, 15};
 
     for(int i=0; i<jogo->n_inimigos; i++){
         jogo->inimigos[i].x = posX[i];

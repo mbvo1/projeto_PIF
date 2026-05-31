@@ -3,7 +3,7 @@
 
 #include "mapa.h"
 
-#define MAX_INIMIGOS 4
+#define MAX_INIMIGOS 8
 
 typedef struct {
     int x, y;
